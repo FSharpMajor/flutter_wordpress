@@ -37,6 +37,10 @@ import 'schemas/tag.dart';
 import 'schemas/user.dart';
 import 'schemas/wordpress_error.dart';
 
+/// @TAK
+import 'schemas/bbp_forum.dart';
+import 'schemas/bbp_topic.dart';
+
 export 'constants.dart';
 export 'requests/params_category_list.dart';
 export 'requests/params_comment_list.dart';
@@ -64,6 +68,10 @@ export 'schemas/tag.dart';
 export 'schemas/title.dart';
 export 'schemas/user.dart';
 export 'schemas/wordpress_error.dart';
+
+/// @TAK
+export 'schemas/bbp_forum.dart';
+export 'schemas/bbp_topic.dart';
 
 /// All WordPress related functionality are defined under this class.
 class WordPress {
@@ -243,24 +251,23 @@ class WordPress {
   ///
   /// (**Note:** *Set only those fetch boolean parameters which you need because
   /// the more information to fetch, the longer it will take to return all Posts*)
-  /// 
+  ///
   /// [fetchAll] will make as many API requests as is needed to get all posts.
   /// This may take a while.
   ///
   /// In case of an error, a [WordPressError] object is thrown.
-  async.Future<List<Post>> fetchPosts({
-    @required ParamsPostList postParams,
-    bool fetchAuthor = false,
-    bool fetchComments = false,
-    Order orderComments = Order.desc,
-    CommentOrderBy orderCommentsBy = CommentOrderBy.date,
-    bool fetchCategories = false,
-    bool fetchTags = false,
-    bool fetchFeaturedMedia = false,
-    bool fetchAttachments = false,
-    String postType = "posts",
-    bool fetchAll = false
-  }) async {
+  async.Future<List<Post>> fetchPosts(
+      {@required ParamsPostList postParams,
+      bool fetchAuthor = false,
+      bool fetchComments = false,
+      Order orderComments = Order.desc,
+      CommentOrderBy orderCommentsBy = CommentOrderBy.date,
+      bool fetchCategories = false,
+      bool fetchTags = false,
+      bool fetchFeaturedMedia = false,
+      bool fetchAttachments = false,
+      String postType = "posts",
+      bool fetchAll = false}) async {
     if (fetchAll) {
       postParams = postParams.copyWith(perPage: 100);
     }
@@ -294,19 +301,19 @@ class WordPress {
         final totalPages = int.parse(response.headers["x-wp-totalpages"]);
 
         for (int i = postParams.pageNum + 1; i <= totalPages; ++i) {
-            posts.addAll(await fetchPosts(
-              postParams: postParams.copyWith(pageNum: i),
-              fetchAuthor: fetchAuthor,
-              fetchComments: fetchComments,
-              orderComments: orderComments,
-              orderCommentsBy: orderCommentsBy,
-              fetchCategories: fetchCategories,
-              fetchTags: fetchTags,
-              fetchFeaturedMedia: fetchFeaturedMedia,
-              fetchAttachments: fetchAttachments,
-            ));
-          }
+          posts.addAll(await fetchPosts(
+            postParams: postParams.copyWith(pageNum: i),
+            fetchAuthor: fetchAuthor,
+            fetchComments: fetchComments,
+            orderComments: orderComments,
+            orderCommentsBy: orderCommentsBy,
+            fetchCategories: fetchCategories,
+            fetchTags: fetchTags,
+            fetchFeaturedMedia: fetchFeaturedMedia,
+            fetchAttachments: fetchAttachments,
+          ));
         }
+      }
 
       return posts;
     } else {
@@ -403,6 +410,62 @@ class WordPress {
         comment: comment,
         children: children,
       );
+    }
+  }
+
+  /// @TAK
+  /// Returns a list of [Forum]
+  async.Future<List<Forum>> fetchForums() async {
+    final StringBuffer url =
+        new StringBuffer(_baseUrl + URL_BBP_BASE + '/forums');
+
+    // url.write(postParams.toString());
+    print(url.toString());
+    final response = await http.get(url.toString(), headers: _urlHeader);
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      List<Forum> forums = new List();
+      final list = json.decode(response.body);
+
+      for (final forum in list) {
+        forums.add(Forum.fromJson(forum));
+      }
+      return forums;
+    } else {
+      try {
+        WordPressError err =
+            WordPressError.fromJson(json.decode(response.body));
+        throw err;
+      } catch (e) {
+        throw new WordPressError(message: response.body);
+      }
+    }
+  }
+
+  /// @TAK
+  /// returns a list of [Topic]
+  async.Future<List<Topic>> fetchTopics() async {
+    final StringBuffer url =
+        new StringBuffer(_baseUrl + URL_BBP_BASE + '/topics');
+
+    // url.write(postParams.toString());
+    print(url.toString());
+    final response = await http.get(url.toString(), headers: _urlHeader);
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      List<Topic> topics = new List();
+      final list = json.decode(response.body)['topics'];
+
+      for (final topic in list) {
+        topics.add(Topic.fromJson(topic));
+      }
+      return topics;
+    } else {
+      try {
+        WordPressError err =
+            WordPressError.fromJson(json.decode(response.body));
+        throw err;
+      } catch (e) {
+        throw new WordPressError(message: response.body);
+      }
     }
   }
 
@@ -579,13 +642,13 @@ class WordPress {
       list.forEach((category) {
         categories.add(Category.fromJson(category));
       });
-      
+
       if (fetchAll && response.headers["x-wp-totalpages"] != null) {
         final totalPages = int.parse(response.headers["x-wp-totalpages"]);
 
         for (int i = params.pageNum + 1; i <= totalPages; ++i) {
-          categories.addAll(await fetchCategories(
-            params: params.copyWith(pageNum: i)));
+          categories.addAll(
+              await fetchCategories(params: params.copyWith(pageNum: i)));
         }
       }
 

@@ -1,6 +1,9 @@
 const URL_JWT_BASE = '/wp-json/jwt-auth/v1';
 const URL_WP_BASE = '/wp-json/wp/v2';
 
+/// @TAK
+const URL_BBP_BASE = '/wp-json/bbp-api/v1';
+
 const URL_JWT_TOKEN = '$URL_JWT_BASE/token';
 const URL_JWT_TOKEN_VALIDATE = '$URL_JWT_BASE/token/validate';
 

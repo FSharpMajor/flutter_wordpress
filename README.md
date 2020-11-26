@@ -1,4 +1,17 @@
-# Flutter Wordpress
+# Flutter Wordpress + BBPress
+
+This library is a modified version of Ritesh Sharma's flutter_wordpress library that allows for bbPress forums to be integrated to your flutter application. 
+Check below for the README of the original library flutter_wordpress
+## Requirements
+The first is those of the original library, listed in the requirements section below.
+Also, aside from the bbPress plugin on your wordpress website (obviously), your website will need [this bbPress API plugin](https://wordpress.org/plugins/bbp-api/) by [Pascal Casier](https://casier.eu/wp-dev/) that this modified library uses to communicate with the website about your bbPress forums.
+
+## Future Works
+implement replies
+
+## Contributors
+- [Takumi Takeshige](https://github.com/FSharpMajor)
+# Flutter WordPress
 
 [pub.dev](https://pub.dev/packages/flutter_wordpress)
 
