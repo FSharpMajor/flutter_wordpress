@@ -443,9 +443,9 @@ class WordPress {
 
   /// @TAK
   /// returns a list of [Topic]
-  async.Future<List<Topic>> fetchTopics() async {
-    final StringBuffer url =
-        new StringBuffer(_baseUrl + URL_BBP_BASE + '/topics');
+  async.Future<List<Topic>> fetchTopics(int forumId) async {
+    final StringBuffer url = new StringBuffer(
+        _baseUrl + URL_BBP_BASE + '/forums/' + forumId.toString());
 
     // url.write(postParams.toString());
     print(url.toString());
