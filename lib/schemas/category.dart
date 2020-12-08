@@ -12,6 +12,9 @@ class Category {
 //  List<Null> meta;
   Links lLinks;
 
+  // @TAK
+  int thumbnailId;
+
   Category(
       {this.id,
       this.count,
@@ -22,7 +25,9 @@ class Category {
       this.taxonomy,
       this.parent,
 //        this.meta,
-      this.lLinks});
+      this.lLinks,
+      // @TAK
+      this.thumbnailId});
 
   Category.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -40,6 +45,11 @@ class Category {
       });
     }*/
     lLinks = json['_links'] != null ? new Links.fromJson(json['_links']) : null;
+    thumbnailId = json['meta'] != null
+        ? (json['meta']['_pciwgas_cat_thumb_id'] != null
+            ? json['meta']['_pciwgas_cat_thumb_id']
+            : null)
+        : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -57,6 +67,9 @@ class Category {
     }*/
     if (this.lLinks != null) {
       data['_links'] = this.lLinks.toJson();
+    }
+    if (this.thumbnailId != null) {
+      data['meta']['_pciwgas_cat_thumb_id'] = this.thumbnailId;
     }
     return data;
   }
