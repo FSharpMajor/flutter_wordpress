@@ -47,7 +47,7 @@ class Category {
     lLinks = json['_links'] != null ? new Links.fromJson(json['_links']) : null;
     thumbnailId = json['meta'] != null
         ? (json['meta']['_pciwgas_cat_thumb_id'] != null
-            ? json['meta']['_pciwgas_cat_thumb_id']
+            ? int.parse(json['meta']['_pciwgas_cat_thumb_id'][0])
             : null)
         : null;
   }
@@ -69,7 +69,7 @@ class Category {
       data['_links'] = this.lLinks.toJson();
     }
     if (this.thumbnailId != null) {
-      data['meta']['_pciwgas_cat_thumb_id'] = this.thumbnailId;
+      data['meta']['_pciwgas_cat_thumb_id'][0] = this.thumbnailId.toString();
     }
     return data;
   }
