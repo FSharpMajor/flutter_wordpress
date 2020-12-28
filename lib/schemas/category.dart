@@ -46,7 +46,7 @@ class Category {
     }*/
     lLinks = json['_links'] != null ? new Links.fromJson(json['_links']) : null;
     thumbnailId = json['meta'] != null
-        ? (json['meta']['_pciwgas_cat_thumb_id'].isNotEmpty
+        ? (json['meta']['_pciwgas_cat_thumb_id'][0] != ""
             ? int.parse(json['meta']['_pciwgas_cat_thumb_id'][0])
             : null)
         : null;
