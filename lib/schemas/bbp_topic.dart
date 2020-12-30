@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:meta/meta.dart';
 import 'content.dart';
 import 'title.dart';
+import 'package:html_unescape/html_unescape.dart';
 
 /// A [bbPress Topic] by @TAK
 class Topic {
@@ -48,7 +51,9 @@ class Topic {
   Topic.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     type = json['type'];
-    title = json['title'] != null ? Title(rendered: json['title']) : null;
+    title = json['title'] != null
+        ? Title(rendered: HtmlUnescape().convert(json['title']))
+        : null;
     authorName = json['author_name'];
     date = json['post_date'];
     content =
@@ -63,7 +68,8 @@ class Topic {
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     if (this.type != null) data['type'] = this.type;
-    if (this.title != null) data['title'] = this.title.rendered;
+    if (this.title != null)
+      data['title'] = HtmlEscape().convert(this.title.rendered);
     if (this.authorName != null) data['author_name'] = this.authorName;
     if (this.date != null) data['post_date'] = this.date;
     if (this.content != null) data['content'] = this.content.rendered;
