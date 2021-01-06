@@ -418,9 +418,6 @@ class WordPress {
   async.Future<List<Forum>> fetchForums() async {
     final StringBuffer url =
         new StringBuffer(_baseUrl + URL_BBP_BASE + '/forums');
-
-    // url.write(postParams.toString());
-    print(url.toString());
     final response = await http.get(url.toString(), headers: _urlHeader);
     if (response.statusCode >= 200 && response.statusCode < 300) {
       List<Forum> forums = new List();
@@ -446,18 +443,36 @@ class WordPress {
   async.Future<List<Topic>> fetchTopics(int forumId) async {
     final StringBuffer url = new StringBuffer(
         _baseUrl + URL_BBP_BASE + '/forums/' + forumId.toString());
-
-    // url.write(postParams.toString());
-    print(url.toString());
     final response = await http.get(url.toString(), headers: _urlHeader);
     if (response.statusCode >= 200 && response.statusCode < 300) {
       List<Topic> topics = new List();
       final list = json.decode(response.body)['topics'];
 
       for (final topic in list) {
-        topics.add(Topic.fromJson(topic));
+        // Retrieve topics individually, as the api does not
+        // return content by fetching with /forums/forumId
+        topics.add(await fetchTopic(topic['id']));
       }
       return topics;
+    } else {
+      try {
+        WordPressError err =
+            WordPressError.fromJson(json.decode(response.body));
+        throw err;
+      } catch (e) {
+        throw new WordPressError(message: response.body);
+      }
+    }
+  }
+
+  /// @TAK
+  /// Returns a [Topic] of the id given by the parameter
+  async.Future<Topic> fetchTopic(int topicId) async {
+    final StringBuffer url = new StringBuffer(
+        _baseUrl + URL_BBP_BASE + '/topics/' + topicId.toString());
+    final response = await http.get(url.toString(), headers: _urlHeader);
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      return Topic.fromJson(json.decode(response.body));
     } else {
       try {
         WordPressError err =
