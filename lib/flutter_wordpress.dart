@@ -107,6 +107,10 @@ class WordPress {
         case WordPressAuthenticator.JWT:
           //TODO: Implement JWT Admin authentication
           break;
+
+        /// @TAK
+        case WordPressAuthenticator.Cookies:
+          break;
       }
     }
   }
@@ -121,6 +125,11 @@ class WordPress {
       return _authenticateViaAP(username, password);
     } else if (_authenticator == WordPressAuthenticator.JWT) {
       return _authenticateViaJWT(username, password);
+    }
+
+    /// @TAK BEGIN
+    else if (_authenticator == WordPressAuthenticator.Cookies) {
+      return _authenticateViaCookies(username, password);
     } else
       return fetchUser(username: username);
   }
@@ -170,6 +179,55 @@ class WordPress {
         await http.post(_baseUrl + URL_JWT_TOKEN_VALIDATE, headers: _urlHeader);
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
+      return fetchMeUser();
+    } else {
+      throw new WordPressError(message: response.body);
+    }
+  }
+
+  /// @TAK
+  async.Future<User> _authenticateViaCookies(
+      String username, String password) async {
+    Map<String, dynamic> body = {};
+    body['log'] = username;
+    body['pwd'] = password;
+    body['wp-submit'] = 'Log In';
+
+    final response = await http.post(_baseUrl + '/wp-login.php', body: body);
+    if (response.statusCode >= 200 && response.statusCode < 400) {
+      Map<String, String> cookiesMap = {};
+      String allSetCookie = response.headers['set-cookie'];
+      if (allSetCookie != null) {
+        var setCookies = allSetCookie.split(',');
+        if (setCookies.length == 1)
+          throw new WordPressError(message: 'Authentication failed');
+
+        for (var setCookie in setCookies) {
+          var cookies = setCookie.split(';');
+
+          for (var cookie in cookies) {
+            if (cookie.length > 0) {
+              var keyValue = cookie.split('=');
+              if (keyValue.length == 2) {
+                var key = keyValue[0].trim();
+                var value = keyValue[1];
+
+                // ignore keys that aren't cookies
+                if (!(key == 'path' || key == 'expires'))
+                  cookiesMap[key] = value;
+              }
+            }
+          }
+        }
+        String cookieStr = "";
+        for (var key in cookiesMap.keys) {
+          if (cookieStr.length > 0) cookieStr += ';';
+          cookieStr += key + "=" + cookiesMap[key];
+        }
+        _urlHeader['cookie'] = cookieStr;
+      } else
+        throw new WordPressError(message: 'Authentication failed');
+
       return fetchMeUser();
     } else {
       throw new WordPressError(message: response.body);
@@ -420,7 +478,6 @@ class WordPress {
         new StringBuffer(_baseUrl + URL_BBP_BASE + '/forums');
 
     // url.write(postParams.toString());
-    print(url.toString());
     final response = await http.get(url.toString(), headers: _urlHeader);
     if (response.statusCode >= 200 && response.statusCode < 300) {
       List<Forum> forums = new List();
@@ -448,7 +505,6 @@ class WordPress {
         _baseUrl + URL_BBP_BASE + '/forums/' + forumId.toString());
 
     // url.write(postParams.toString());
-    print(url.toString());
     final response = await http.get(url.toString(), headers: _urlHeader);
     if (response.statusCode >= 200 && response.statusCode < 300) {
       List<Topic> topics = new List();

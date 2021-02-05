@@ -19,6 +19,9 @@ const URL_USER_ME = '$URL_WP_BASE/users/me';
 enum WordPressAuthenticator {
   JWT,
   ApplicationPasswords,
+  Cookies,
+
+  /// @TAK
 }
 enum WordPressContext { view, embed, edit }
 
