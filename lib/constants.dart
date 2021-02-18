@@ -16,6 +16,9 @@ const URL_TAGS = '$URL_WP_BASE/tags';
 const URL_USERS = '$URL_WP_BASE/users';
 const URL_USER_ME = '$URL_WP_BASE/users/me';
 
+/// @TAK
+const URL_SITES = '$URL_WP_BASE/sites';
+
 enum WordPressAuthenticator {
   JWT,
   ApplicationPasswords,

@@ -40,6 +40,7 @@ import 'schemas/wordpress_error.dart';
 /// @TAK
 import 'schemas/bbp_forum.dart';
 import 'schemas/bbp_topic.dart';
+import 'schemas/site.dart';
 
 export 'constants.dart';
 export 'requests/params_category_list.dart';
@@ -72,6 +73,7 @@ export 'schemas/wordpress_error.dart';
 /// @TAK
 export 'schemas/bbp_forum.dart';
 export 'schemas/bbp_topic.dart';
+export 'schemas/site.dart';
 
 /// All WordPress related functionality are defined under this class.
 class WordPress {
@@ -239,6 +241,33 @@ class WordPress {
     }
   }
 
+  /// @TAK
+  /// Returns a list of [Sites]
+  async.Future<List<Site>> fetchSites() async {
+    final StringBuffer url = new StringBuffer(_baseUrl + URL_SITES);
+
+    final response = await http.get(url.toString(), headers: _urlHeader);
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      List<Site> sites = new List();
+      final list = json.decode(response.body);
+
+      for (final site in list) {
+        sites.add(new Site.fromJson(site));
+      }
+
+      return sites;
+    } else {
+      try {
+        WordPressError err =
+            WordPressError.fromJson(json.decode(response.body));
+        throw err;
+      } catch (e) {
+        throw new WordPressError(message: response.body);
+      }
+    }
+  }
+
   /// This returns a list of [Post] based on the filter parameters
   /// specified through [ParamsPostList] object. By default it returns only
   /// [ParamsPostList.perPage] number of posts in page [ParamsPostList.pageNum].
@@ -267,13 +296,21 @@ class WordPress {
       bool fetchFeaturedMedia = false,
       bool fetchAttachments = false,
       String postType = "posts",
-      bool fetchAll = false}) async {
+      bool fetchAll = false,
+
+      /// @TAK
+      String fetchFromSubsite = null}) async {
     if (fetchAll) {
       postParams = postParams.copyWith(perPage: 100);
     }
 
-    final StringBuffer url =
-        new StringBuffer(_baseUrl + URL_WP_BASE + "/" + postType);
+    final StringBuffer url = new StringBuffer(_baseUrl +
+        URL_WP_BASE +
+
+        /// @TAK
+        fetchFromSubsite +
+        "/" +
+        postType);
 
     url.write(postParams.toString());
 
@@ -415,9 +452,11 @@ class WordPress {
 
   /// @TAK
   /// Returns a list of [Forum]
-  async.Future<List<Forum>> fetchForums() async {
-    final StringBuffer url =
-        new StringBuffer(_baseUrl + URL_BBP_BASE + '/forums');
+  async.Future<List<Forum>> fetchForums({
+    String fetchFromSubsite = null,
+  }) async {
+    final StringBuffer url = new StringBuffer(
+        _baseUrl + URL_BBP_BASE + fetchFromSubsite + '/forums');
 
     // url.write(postParams.toString());
     print(url.toString());
@@ -443,9 +482,15 @@ class WordPress {
 
   /// @TAK
   /// returns a list of [Topic]
-  async.Future<List<Topic>> fetchTopics(int forumId) async {
-    final StringBuffer url = new StringBuffer(
-        _baseUrl + URL_BBP_BASE + '/forums/' + forumId.toString());
+  async.Future<List<Topic>> fetchTopics(
+    int forumId, {
+    String fetchFromSubsite = null,
+  }) async {
+    final StringBuffer url = new StringBuffer(_baseUrl +
+        URL_BBP_BASE +
+        fetchFromSubsite +
+        '/forums/' +
+        forumId.toString());
 
     // url.write(postParams.toString());
     print(url.toString());
@@ -624,13 +669,22 @@ class WordPress {
   /// [ParamsCategoryList.perPage] number of categories in page [ParamsCategoryList.pageNum].
   ///
   /// In case of an error, a [WordPressError] object is thrown.
-  async.Future<List<Category>> fetchCategories(
-      {@required ParamsCategoryList params, bool fetchAll = false}) async {
+  async.Future<List<Category>> fetchCategories({
+    @required ParamsCategoryList params,
+    bool fetchAll = false,
+
+    /// @TAK
+    String fetchFromSubsite = null,
+  }) async {
     if (fetchAll) {
       params = params.copyWith(perPage: 100);
     }
 
-    final StringBuffer url = new StringBuffer(_baseUrl + URL_CATEGORIES);
+    final StringBuffer url = new StringBuffer(_baseUrl +
+
+        /// @TAK
+        fetchFromSubsite +
+        URL_CATEGORIES);
 
     url.write(params.toString());
 
@@ -699,9 +753,17 @@ class WordPress {
   /// [ParamsMediaList.perPage] number of tags in page [ParamsMediaList.pageNum].
   ///
   /// In case of an error, a [WordPressError] object is thrown.
-  async.Future<List<Media>> fetchMediaList(
-      {@required ParamsMediaList params}) async {
-    final StringBuffer url = new StringBuffer(_baseUrl + URL_MEDIA);
+  async.Future<List<Media>> fetchMediaList({
+    @required ParamsMediaList params,
+
+    /// @TAK
+    String fetchFromSubsite = null,
+  }) async {
+    final StringBuffer url = new StringBuffer(_baseUrl +
+
+        /// @TAK
+        fetchFromSubsite +
+        URL_MEDIA);
 
     url.write(params.toString());
 
