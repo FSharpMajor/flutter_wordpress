@@ -27,10 +27,10 @@ class Site {
       this.lang_id});
 
   Site.fromJson(Map<String, dynamic> json) {
-    blog_id = json['blog_id'];
+    blog_id = int.parse(json['blog_id']);
     domain = json['domain'];
     path = json['path'];
-    site_id = json['site_id'];
+    site_id = int.parse(json['site_id']);
     registered = json['registered'];
     last_updated = json['last_updated'];
     public = json['public'] == '1';
@@ -38,15 +38,15 @@ class Site {
     mature = json['mature'] == '1';
     spam = json['spam'] == '1';
     deleted = json['deleted'] == '1';
-    lang_id = json['lang_id'];
+    lang_id = int.parse(json['lang_id']);
   }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['blog_id'] = this.blog_id;
+    data['blog_id'] = this.blog_id.toString();
     data['domain'] = this.domain;
     data['path'] = this.path;
-    data['site_id'] = this.site_id;
+    data['site_id'] = this.site_id.toString();
     data['registered'] = this.registered;
     data['last_updated'] = this.last_updated;
     data['public'] = this.public ? '1' : '0';
@@ -54,7 +54,7 @@ class Site {
     data['mature'] = this.mature ? '1' : '0';
     data['spam'] = this.spam ? '1' : '0';
     data['deleted'] = this.deleted ? '1' : '0';
-    data['lang_id'] = this.lang_id;
+    data['lang_id'] = this.lang_id.toString();
     return data;
   }
 }
