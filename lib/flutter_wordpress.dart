@@ -304,13 +304,8 @@ class WordPress {
       postParams = postParams.copyWith(perPage: 100);
     }
 
-    final StringBuffer url = new StringBuffer(_baseUrl +
-        URL_WP_BASE +
-
-        /// @TAK
-        fetchFromSubsite +
-        "/" +
-        postType);
+    final StringBuffer url = new StringBuffer(
+        _baseUrl + URL_WP_BASE + fetchFromSubsite ?? '' + "/" + postType);
 
     url.write(postParams.toString());
 
@@ -456,7 +451,7 @@ class WordPress {
     String fetchFromSubsite = null,
   }) async {
     final StringBuffer url = new StringBuffer(
-        _baseUrl + URL_BBP_BASE + fetchFromSubsite + '/forums');
+        _baseUrl + URL_BBP_BASE + fetchFromSubsite ?? '' + '/forums');
 
     // url.write(postParams.toString());
     print(url.toString());
@@ -486,11 +481,9 @@ class WordPress {
     int forumId, {
     String fetchFromSubsite = null,
   }) async {
-    final StringBuffer url = new StringBuffer(_baseUrl +
-        URL_BBP_BASE +
-        fetchFromSubsite +
-        '/forums/' +
-        forumId.toString());
+    final StringBuffer url = new StringBuffer(
+        _baseUrl + URL_BBP_BASE + fetchFromSubsite ??
+            '' + '/forums/' + forumId.toString());
 
     // url.write(postParams.toString());
     print(url.toString());
@@ -680,11 +673,8 @@ class WordPress {
       params = params.copyWith(perPage: 100);
     }
 
-    final StringBuffer url = new StringBuffer(_baseUrl +
-
-        /// @TAK
-        fetchFromSubsite +
-        URL_CATEGORIES);
+    final StringBuffer url =
+        new StringBuffer(_baseUrl + fetchFromSubsite ?? '' + URL_CATEGORIES);
 
     url.write(params.toString());
 
@@ -759,11 +749,8 @@ class WordPress {
     /// @TAK
     String fetchFromSubsite = null,
   }) async {
-    final StringBuffer url = new StringBuffer(_baseUrl +
-
-        /// @TAK
-        fetchFromSubsite +
-        URL_MEDIA);
+    final StringBuffer url =
+        new StringBuffer(_baseUrl + fetchFromSubsite ?? '' + URL_MEDIA);
 
     url.write(params.toString());
 
