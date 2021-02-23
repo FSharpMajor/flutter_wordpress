@@ -11,6 +11,7 @@ class Site {
   bool spam;
   bool deleted;
   int lang_id;
+  String site_name;
 
   Site(
       {this.blog_id,
@@ -24,7 +25,8 @@ class Site {
       this.mature,
       this.spam,
       this.deleted,
-      this.lang_id});
+      this.lang_id,
+      this.site_name});
 
   Site.fromJson(Map<String, dynamic> json) {
     blog_id = int.parse(json['blog_id']);
@@ -39,6 +41,7 @@ class Site {
     spam = json['spam'] == '1';
     deleted = json['deleted'] == '1';
     lang_id = int.parse(json['lang_id']);
+    site_name = json['site_name'];
   }
 
   Map<String, dynamic> toJson() {
@@ -55,6 +58,7 @@ class Site {
     data['spam'] = this.spam ? '1' : '0';
     data['deleted'] = this.deleted ? '1' : '0';
     data['lang_id'] = this.lang_id.toString();
+    data['site_name'] = this.site_name;
     return data;
   }
 }
