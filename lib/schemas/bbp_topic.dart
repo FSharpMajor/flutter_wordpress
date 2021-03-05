@@ -74,15 +74,15 @@ class Topic {
     content =
         json['content'] != null ? new Content(rendered: json['content']) : null;
     parent = json['parent'];
-    reply_count = int.parse(json['reply_count']);
+    reply_count = json['reply_count'];
     permalink = json['permalink'];
     forumId = json['forum_id'];
     forumTitle = json['forum_title'];
-    next_page = int.parse(json['next_page']);
+    next_page = json['next_page'];
     next_page_url = json['next_page_url'];
-    prev_page = int.parse(json['prev_page']);
+    prev_page = json['prev_page'];
     prev_page_url = json['prev_page_url'];
-    total_replies = int.parse(json['total_replies']);
+    total_replies = json['total_replies'];
     replies = json['replies'].map((data) => Reply.fromJson(data)).toList();
   }
 
