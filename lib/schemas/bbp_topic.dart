@@ -83,7 +83,7 @@ class Topic {
     prev_page = json['prev_page'];
     prev_page_url = json['prev_page_url'];
     total_replies = json['total_replies'];
-    replies = json['replies'].map((data) => Reply.fromJson(data)).toList();
+    replies = json['replies']?.map((data) => Reply.fromJson(data))?.toList();
   }
 
   Map<String, dynamic> toJson() {
