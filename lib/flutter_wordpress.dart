@@ -14,8 +14,6 @@ import 'dart:async' as async;
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter_wordpress/schemas/bbp_reply.dart';
-import 'package:flutter_wordpress/schemas/bbp_reply_hierarchy.dart';
 import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
 
@@ -42,6 +40,8 @@ import 'schemas/wordpress_error.dart';
 /// @TAK
 import 'schemas/bbp_forum.dart';
 import 'schemas/bbp_topic.dart';
+import 'schemas/bbp_reply.dart';
+import 'schemas/bbp_reply_hierarchy.dart';
 import 'schemas/site.dart';
 
 export 'constants.dart';
@@ -75,6 +75,8 @@ export 'schemas/wordpress_error.dart';
 /// @TAK
 export 'schemas/bbp_forum.dart';
 export 'schemas/bbp_topic.dart';
+export 'schemas/bbp_reply.dart';
+export 'schemas/bbp_reply_hierarchy.dart';
 export 'schemas/site.dart';
 
 /// All WordPress related functionality are defined under this class.
