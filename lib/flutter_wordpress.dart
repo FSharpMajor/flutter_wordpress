@@ -507,7 +507,7 @@ class WordPress {
 
       for (final data in list) {
         topics.add(await _topicBuilder(
-          int.parse(data['topic_id']),
+          int.parse(data['id']),
           embed: embed,
           fetchFromSubsite: fetchFromSubsite,
         ));
