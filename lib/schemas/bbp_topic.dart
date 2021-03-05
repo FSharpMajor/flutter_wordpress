@@ -74,7 +74,7 @@ class Topic {
     content =
         json['content'] != null ? new Content(rendered: json['content']) : null;
     parent = json['parent'];
-    reply_count = json['reply_count'];
+    reply_count = int.parse(json['reply_count']);
     permalink = json['permalink'];
     forumId = json['forum_id'];
     forumTitle = json['forum_title'];
