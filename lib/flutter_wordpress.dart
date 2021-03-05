@@ -14,6 +14,8 @@ import 'dart:async' as async;
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter_wordpress/schemas/bbp_reply.dart';
+import 'package:flutter_wordpress/schemas/bbp_reply_hierarchy.dart';
 import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
 
@@ -486,6 +488,7 @@ class WordPress {
   async.Future<List<Topic>> fetchTopics(
     int forumId, {
     String fetchFromSubsite = null,
+    bool embed = true,
   }) async {
     final StringBuffer url = new StringBuffer(_baseUrl +
         (fetchFromSubsite ?? '') +
@@ -500,8 +503,12 @@ class WordPress {
       List<Topic> topics = new List();
       final list = json.decode(response.body)['topics'];
 
-      for (final topic in list) {
-        topics.add(Topic.fromJson(topic));
+      for (final data in list) {
+        topics.add(await _topicBuilder(
+          int.parse(data['topic_id']),
+          embed: embed,
+          fetchFromSubsite: fetchFromSubsite,
+        ));
       }
       return topics;
     } else {
@@ -512,6 +519,99 @@ class WordPress {
       } catch (e) {
         throw new WordPressError(message: response.body);
       }
+    }
+  }
+
+  /// @TAK
+  /// fetches topic info and returns a [Topic]
+  async.Future<Topic> _topicBuilder(
+    int topicId, {
+    String fetchFromSubsite = null,
+    bool embed = false,
+  }) async {
+    final StringBuffer url = new StringBuffer(_baseUrl +
+        (fetchFromSubsite ?? '') +
+        URL_BBP_BASE +
+        '/topics/' +
+        topicId.toString());
+    url.write('?_embed=true');
+
+    print(url.toString());
+    final response = await http.get(url.toString(), headers: _urlHeader);
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      final data = json.decode(response.body);
+      Topic topic = Topic.fromJson(data);
+      if (topic.replies != null && topic.replies.isNotEmpty) {
+        // build reply hierarchy
+        topic.replyHierarchy = [];
+        topic.replies.forEach((reply) {
+          if (reply.reply_to == 0)
+            topic.replyHierarchy
+                .add(_replyHierarchyBuilder(topic.replies, reply));
+        });
+      }
+      return topic;
+    } else {
+      try {
+        WordPressError err =
+            WordPressError.fromJson(json.decode(response.body));
+        throw err;
+      } catch (e) {
+        throw new WordPressError(message: response.body);
+      }
+    }
+  }
+
+  /// @TAK
+  /// fetches [reply]
+  async.Future<Reply> _replyBuilder(
+    Reply reply,
+    int replyId, {
+    String fetchFromSubsite = null,
+  }) async {
+    final StringBuffer url = new StringBuffer(_baseUrl +
+        (fetchFromSubsite ?? '') +
+        URL_BBP_BASE +
+        '/replies/' +
+        replyId.toString());
+
+    print(url.toString());
+    final response = await http.get(url.toString(), headers: _urlHeader);
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      final data = json.decode(response.body);
+      reply.topic_id = int.parse(data['topic_id']);
+      reply.topic_title = data['topic_id'];
+      reply.forum_id = int.parse(data['forum_id']);
+      reply.content = data['content'];
+      return reply;
+    } else {
+      try {
+        WordPressError err =
+            WordPressError.fromJson(json.decode(response.body));
+        throw err;
+      } catch (e) {
+        throw new WordPressError(message: response.body);
+      }
+    }
+  }
+
+  ///@TAK
+  ///recursively builds hierarcgy of replies for given topic/reply
+  ReplyHierarchy _replyHierarchyBuilder(List<Reply> replyList, Reply reply) {
+    final childReplies = replyList.where((ele) =>
+        ele.id != reply.id && ele.reply_to != 0 && ele.reply_to == reply.id);
+
+    if (childReplies == null || childReplies.length == 0) {
+      return new ReplyHierarchy(reply: reply, children: null);
+    } else {
+      List<ReplyHierarchy> children = new List();
+      childReplies.forEach((c) {
+        children.add(_replyHierarchyBuilder(replyList, c));
+      });
+      return new ReplyHierarchy(
+        reply: reply,
+        children: children,
+      );
     }
   }
 

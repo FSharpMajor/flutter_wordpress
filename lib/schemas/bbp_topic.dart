@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:flutter_wordpress/schemas/bbp_reply.dart';
+import 'package:flutter_wordpress/schemas/bbp_reply_hierarchy.dart';
 import 'package:meta/meta.dart';
 import 'content.dart';
 import 'title.dart';
@@ -39,6 +41,19 @@ class Topic {
   /// the title of the forum that the topic belongs to
   String forumTitle;
 
+  int next_page;
+
+  int total_topics;
+  int total_pages;
+  int current_page;
+  int per_page;
+  String next_page_url;
+  int prev_page;
+  String prev_page_url;
+  int total_replies;
+  List<Reply> replies;
+  List<ReplyHierarchy> replyHierarchy;
+
   Topic({
     @required String title,
     @required String content,
@@ -63,6 +78,12 @@ class Topic {
     permalink = json['permalink'];
     forumId = json['forum_id'];
     forumTitle = json['forum_title'];
+    next_page = int.parse(json['next_page']);
+    next_page_url = json['next_page_url'];
+    prev_page = int.parse(json['prev_page']);
+    prev_page_url = json['prev_page_url'];
+    total_replies = int.parse(json['total_replies']);
+    replies = json['replies'].map((data) => Reply.fromJson(data)).toList();
   }
 
   Map<String, dynamic> toJson() {
