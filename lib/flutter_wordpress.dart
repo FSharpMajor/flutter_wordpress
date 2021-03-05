@@ -507,7 +507,7 @@ class WordPress {
 
       for (final data in list) {
         topics.add(await _topicBuilder(
-          int.parse(data['id']),
+          data['id'],
           embed: embed,
           fetchFromSubsite: fetchFromSubsite,
         ));
@@ -581,9 +581,9 @@ class WordPress {
     final response = await http.get(url.toString(), headers: _urlHeader);
     if (response.statusCode >= 200 && response.statusCode < 300) {
       final data = json.decode(response.body);
-      reply.topic_id = int.parse(data['topic_id']);
-      reply.topic_title = data['topic_id'];
-      reply.forum_id = int.parse(data['forum_id']);
+      reply.topic_id = data['topic_id'];
+      reply.topic_title = data['topic_title'];
+      reply.forum_id = data['forum_id'];
       reply.content = data['content'];
       return reply;
     } else {
