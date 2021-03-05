@@ -326,6 +326,7 @@ class WordPress {
           setTags: fetchTags,
           setFeaturedMedia: fetchFeaturedMedia,
           setAttachments: fetchAttachments,
+          fetchFromSubsite: fetchFromSubsite,
         ));
       }
 
@@ -371,6 +372,7 @@ class WordPress {
     bool setTags = false,
     bool setFeaturedMedia = false,
     bool setAttachments = false,
+    String fetchFromSubsite = null,
   }) async {
     if (setAuthor) {
       User author = await fetchUser(id: post.authorID);
@@ -378,11 +380,13 @@ class WordPress {
     }
     if (setComments) {
       List<Comment> comments = await fetchComments(
-          params: ParamsCommentList(
-        includePostIDs: [post.id],
-        order: orderComments,
-        orderBy: orderCommentsBy,
-      ));
+        params: ParamsCommentList(
+          includePostIDs: [post.id],
+          order: orderComments,
+          orderBy: orderCommentsBy,
+        ),
+        fetchFromSubsite: fetchFromSubsite,
+      );
       if (comments != null && comments.length != 0) {
         post.comments = comments;
 
@@ -395,8 +399,10 @@ class WordPress {
       }
     }
     if (setCategories) {
-      List<Category> categories =
-          await fetchCategories(params: ParamsCategoryList(post: post.id));
+      List<Category> categories = await fetchCategories(
+        params: ParamsCategoryList(post: post.id),
+        fetchFromSubsite: fetchFromSubsite,
+      );
       if (categories != null && categories.length != 0)
         post.categories = categories;
     }
@@ -595,9 +601,12 @@ class WordPress {
   /// [ParamsCommentList.perPage] number of comments in page [ParamsCommentList.pageNum].
   ///
   /// In case of an error, a [WordPressError] object is thrown.
-  async.Future<List<Comment>> fetchComments(
-      {@required ParamsCommentList params}) async {
-    final StringBuffer url = new StringBuffer(_baseUrl + URL_COMMENTS);
+  async.Future<List<Comment>> fetchComments({
+    @required ParamsCommentList params,
+    String fetchFromSubsite = null,
+  }) async {
+    final StringBuffer url =
+        new StringBuffer(_baseUrl + (fetchFromSubsite ?? '') + URL_COMMENTS);
 
     url.write(params.toString());
 
@@ -627,9 +636,12 @@ class WordPress {
   /// [CommentHierarchy.children] containing the replies to that comment.
   ///
   /// In case of an error, a [WordPressError] object is thrown.
-  async.Future<List<CommentHierarchy>> fetchCommentsAsHierarchy(
-      {@required ParamsCommentList params}) async {
-    final StringBuffer url = new StringBuffer(_baseUrl + URL_COMMENTS);
+  async.Future<List<CommentHierarchy>> fetchCommentsAsHierarchy({
+    @required ParamsCommentList params,
+    String fetchFromSubsite = null,
+  }) async {
+    final StringBuffer url =
+        new StringBuffer(_baseUrl + (fetchFromSubsite ?? '') + URL_COMMENTS);
 
     url.write(params.toString());
 
@@ -1060,8 +1072,10 @@ class WordPress {
   /// comment information.
   ///
   /// In case of an error, a [WordPressError] object is thrown.
-  async.Future<Comment> createComment({@required Comment comment}) async {
-    final StringBuffer url = new StringBuffer(_baseUrl + URL_COMMENTS);
+  async.Future<Comment> createComment(
+      {@required Comment comment, fetchFromSubsite = null}) async {
+    final StringBuffer url =
+        new StringBuffer(_baseUrl + (fetchFromSubsite ?? '') + URL_COMMENTS);
 
     final response = await http.post(
       url.toString(),
