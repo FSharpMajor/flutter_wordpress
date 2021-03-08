@@ -155,7 +155,7 @@ class WordPress {
 
       _urlHeader['Authorization'] = 'Bearer ${authResponse.token}';
 
-      return fetchUser(email: authResponse.userEmail);
+      return fetchMeUser();
     } else {
       try {
         throw new WordPressError.fromJson(json.decode(response.body));
