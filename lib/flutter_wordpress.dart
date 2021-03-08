@@ -188,8 +188,13 @@ class WordPress {
   /// Only one parameter is enough to search for the user.
   ///
   /// In case of an error, a [WordPressError] object is thrown.
-  async.Future<User> fetchUser({int id, String email, String username}) async {
-    final StringBuffer url = new StringBuffer(_baseUrl + URL_USERS);
+  async.Future<User> fetchUser(
+      {int id,
+      String email,
+      String username,
+      String fetchFromSubsite = null}) async {
+    final StringBuffer url =
+        new StringBuffer(_baseUrl + (fetchFromSubsite ?? '') + URL_USERS);
     final Map<String, String> params = {
       'search': '',
     };
@@ -379,7 +384,8 @@ class WordPress {
     String fetchFromSubsite = null,
   }) async {
     if (setAuthor) {
-      User author = await fetchUser(id: post.authorID);
+      User author = await fetchUser(
+          id: post.authorID, fetchFromSubsite: fetchFromSubsite);
       if (author != null) post.author = author;
     }
     if (setComments) {
@@ -653,8 +659,9 @@ class WordPress {
   ///
   /// In case of an error, a [WordPressError] object is thrown.
   async.Future<FetchUsersResult> fetchUsers(
-      {@required ParamsUserList params}) async {
-    final StringBuffer url = new StringBuffer(_baseUrl + URL_USERS);
+      {@required ParamsUserList params, String fetchFromSubsite = null}) async {
+    final StringBuffer url =
+        new StringBuffer(_baseUrl + (fetchFromSubsite ?? '') + URL_USERS);
 
     url.write(params.toString());
 
