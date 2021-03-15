@@ -1,10 +1,42 @@
 # Flutter Wordpress + BBPress
 
-This library is a modified version of Ritesh Sharma's flutter_wordpress library that allows for bbPress forums to be integrated to your flutter application. 
-Check below for the README of the original library flutter_wordpress
+This library is a modified version of Ritesh Sharma's flutter_wordpress library that allows for bbPress forums to be integrated to your flutter application, as well as better multisite compatibility. 
+Check below for the README of the original library flutter_wordpress.
 ## Requirements
 The first is those of the original library, listed in the requirements section below.
-Also, aside from the bbPress plugin on your wordpress website (obviously), your website will need [this bbPress API plugin](https://wordpress.org/plugins/bbp-api/) by [Pascal Casier](https://casier.eu/wp-dev/) that this modified library uses to communicate with the website about your bbPress forums.
+Also, aside from the bbPress plugin on your wordpress website (obviously), your website will need [this bbPress API plugin](https://wordpress.org/plugins/bbp-api/) by [Pascal Casier](https://casier.eu/wp-dev/) that this modified library uses to communicate with the website about your bbPress forums. If your WordPress site has multisite enabled, you would want to also install [Multisite REST API](https://wordpress.org/plugins/multisite-rest-api/) by [Brett Krueger](https://krux.us/) to allow this package to list all the subsites under a WordPress site. Keep note that at least currently, this package only supports the subdirectory implementation of multisite, not the subdomain implementation.
+
+## Getting Started
+### 1. Import Library
+
+### 2. Instantiate Wordpress class
+Look at the README of the original flutter_wordpress package below to find out how to do this
+
+### 3. Fetch Sites
+```dart
+Future<List<wp.Site>> sites = wordPress.fetchSites();
+```
+
+### 4. Fetch Posts, Forums, etc from a specific subsite
+Relevant fetches can be made under a specific subsite by inserting a fetchFromSubsite parameter when calling the fetch function:
+```dart
+String fetchFromSubsite = null
+```
+### 5. Fetch Forums
+```dart
+Future<List<wp.Forum>> forums = wordPress.fetchPosts(
+  fetchFromSubsite = '/',
+);
+```
+
+### 6. Fetch Topics
+```dart
+Future<List<wp.Topic>> topics = wordPress.fetchTopics(
+  forumId = 1,
+  fetchFromSubsite = '/',
+  embed = true,
+);
+```
 
 ## Future Works
 TODO
