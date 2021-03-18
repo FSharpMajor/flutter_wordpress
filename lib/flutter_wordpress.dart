@@ -508,11 +508,11 @@ class WordPress {
     print(url.toString());
     final response = await http.get(url.toString(), headers: _urlHeader);
     if (response.statusCode >= 200 && response.statusCode < 300) {
-      List<Topic> topics = new List();
+      List<Topic> topics = [];
       final list = json.decode(response.body)['topics'];
 
       for (final data in list) {
-        topics.add(await _topicBuilder(
+        topics.add(await fetchTopic(
           data['id'],
           embed: embed,
           fetchFromSubsite: fetchFromSubsite,
@@ -532,7 +532,7 @@ class WordPress {
 
   /// @TAK
   /// fetches topic info and returns a [Topic]
-  async.Future<Topic> _topicBuilder(
+  async.Future<Topic> fetchTopic(
     int topicId, {
     String fetchFromSubsite = null,
     bool embed = false,
@@ -1204,4 +1204,61 @@ class WordPress {
       }
     }
   }
-}
+
+  /// @TAK
+  /// creates a new [Topic] under a [Forum]
+  async.Future<Topic> createTopic(
+      {@required Topic topic,
+      @required int forumId,
+      fetchFromSubsite = null}) async {
+    final StringBuffer url = new StringBuffer(_baseUrl +
+        (fetchFromSubsite ?? '') +
+        URL_BBP_BASE +
+        '/forums/' +
+        forumId.toString());
+
+    final response = await http.post(url.toString(),
+        headers: _urlHeader, body: topic.toJson());
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      return Topic.fromJson(json.decode(response.body));
+    } else {
+      try {
+        WordPressError err =
+            WordPressError.fromJson(json.decode(response.body));
+        throw err;
+      } catch (e) {
+        throw new WordPressError(message: response.body);
+      }
+    }
+  }
+
+  /// @TAK
+  /// creates a new [reply] to a [Topic] or another [Reply]
+  async.Future<Reply> createReply(
+      {@required Reply reply,
+      @required int replyingId,
+      bool isReplyingToTopic = true,
+      String fetchFromSubsite = null}) async {
+    final StringBuffer url = new StringBuffer(_baseUrl +
+        (fetchFromSubsite ?? '') +
+        URL_BBP_BASE +
+        (isReplyingToTopic ? '/topics/' : '/replies/') +
+        replyingId.toString());
+
+    final response = await http.post(url.toString(),
+        headers: _urlHeader, body: reply.toJson());
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      return Reply.fromJson(json.decode(response.body));
+    } else {
+      try {
+        WordPressError err =
+            WordPressError.fromJson(json.decode(response.body));
+        throw err;
+      } catch (e) {
+        throw new WordPressError(message: response.body);
+      }
+    }
+  }
+} // end WordPress

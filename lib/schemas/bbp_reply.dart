@@ -31,12 +31,13 @@ class Reply {
 
   // Author info
   String author_name;
+  String email;
   String author_avatar;
 
   String post_date;
 
   Reply({
-    @required this.id,
+    this.id,
     @required this.topic_id,
     @required String content,
     @required this.reply_to,
@@ -46,6 +47,7 @@ class Reply {
     this.forum_id,
     this.tags,
     this.author_name,
+    this.email,
     this.author_avatar,
   }) : content = new Content(rendered: content);
 
@@ -59,6 +61,7 @@ class Reply {
     content = new Content(rendered: json['content']);
     reply_to = json['reply_to'];
     author_name = json['author_name'];
+    email = json['email'];
     author_avatar = json['author_avatar'];
     post_date = json['post_date'];
   }
@@ -90,6 +93,8 @@ class Reply {
     if (this.content != null) {
       data['content'] = this.content.rendered.toString();
     }
+    if (this.author_name != null) data['author_name'] = this.author_name;
+    if (this.email != null) data['email'] = this.email;
     return data;
   }
 

@@ -20,6 +20,8 @@ class Topic {
   /// Name of author
   String authorName;
 
+  String email;
+
   /// date of posting this topic
   String date;
 
@@ -59,6 +61,7 @@ class Topic {
     @required String content,
     @required String authorName,
     this.date,
+    this.email,
   })  : this.title = new Title(rendered: title),
         this.content = new Content(rendered: content),
         this.authorName = authorName;
@@ -70,11 +73,13 @@ class Topic {
         ? Title(rendered: HtmlUnescape().convert(json['title']))
         : null;
     authorName = json['author_name'];
+    email = json['email'];
     date = json['post_date'];
     content =
         json['content'] != null ? new Content(rendered: json['content']) : null;
     parent = json['parent'];
-    reply_count = int.parse(json['reply_count']);
+    reply_count =
+        json['reply_count'] != null ? int.parse(json['reply_count']) : null;
     permalink = json['permalink'];
     forumId = json['forum_id'];
     forumTitle = json['forum_title'];
@@ -95,6 +100,7 @@ class Topic {
     if (this.title != null)
       data['title'] = HtmlEscape().convert(this.title.rendered);
     if (this.authorName != null) data['author_name'] = this.authorName;
+    if (this.email != null) data['email'] = this.email;
     if (this.date != null) data['post_date'] = this.date;
     if (this.content != null) data['content'] = this.content.rendered;
     if (this.parent != null) data['parent'] = this.parent;

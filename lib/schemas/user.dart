@@ -45,8 +45,7 @@ class User {
       this.avatarUrls,
       this.meta,
       this.lLinks,
-      this.password
-      });
+      this.password});
 
   User.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -54,7 +53,7 @@ class User {
     name = json['name'];
     firstName = json['first_name'];
     lastName = json['last_name'];
-    email = json['email'];
+    email = json['user_email'];
     url = json['url'];
     description = json['description'];
     link = json['link'];
@@ -89,7 +88,7 @@ class User {
     data['name'] = this.name;
     data['first_name'] = this.firstName;
     data['last_name'] = this.lastName;
-    data['email'] = this.email;
+    data['user_email'] = this.email;
     data['url'] = this.url;
     data['description'] = this.description;
     data['link'] = this.link;
