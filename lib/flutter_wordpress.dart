@@ -189,12 +189,9 @@ class WordPress {
   ///
   /// In case of an error, a [WordPressError] object is thrown.
   async.Future<User> fetchUser(
-      {int id,
-      String email,
-      String username,
-      String fetchFromSubsite = null}) async {
+      {int id, String email, String username, String onSubsite = null}) async {
     final StringBuffer url =
-        new StringBuffer(_baseUrl + (fetchFromSubsite ?? '') + URL_USERS);
+        new StringBuffer(_baseUrl + (onSubsite ?? '') + URL_USERS);
     final Map<String, String> params = {
       'search': '',
     };
@@ -308,13 +305,13 @@ class WordPress {
       bool fetchAll = false,
 
       /// @TAK
-      String fetchFromSubsite = null}) async {
+      String onSubsite = null}) async {
     if (fetchAll) {
       postParams = postParams.copyWith(perPage: 100);
     }
 
     final StringBuffer url = new StringBuffer(
-        _baseUrl + (fetchFromSubsite ?? '') + URL_WP_BASE + "/" + postType);
+        _baseUrl + (onSubsite ?? '') + URL_WP_BASE + "/" + postType);
 
     url.write(postParams.toString());
 
@@ -335,7 +332,7 @@ class WordPress {
           setTags: fetchTags,
           setFeaturedMedia: fetchFeaturedMedia,
           setAttachments: fetchAttachments,
-          fetchFromSubsite: fetchFromSubsite,
+          onSubsite: onSubsite,
         ));
       }
 
@@ -381,11 +378,10 @@ class WordPress {
     bool setTags = false,
     bool setFeaturedMedia = false,
     bool setAttachments = false,
-    String fetchFromSubsite = null,
+    String onSubsite = null,
   }) async {
     if (setAuthor) {
-      User author = await fetchUser(
-          id: post.authorID, fetchFromSubsite: fetchFromSubsite);
+      User author = await fetchUser(id: post.authorID, onSubsite: onSubsite);
       if (author != null) post.author = author;
     }
     if (setComments) {
@@ -395,7 +391,7 @@ class WordPress {
           order: orderComments,
           orderBy: orderCommentsBy,
         ),
-        fetchFromSubsite: fetchFromSubsite,
+        onSubsite: onSubsite,
       );
       if (comments != null && comments.length != 0) {
         post.comments = comments;
@@ -411,7 +407,7 @@ class WordPress {
     if (setCategories) {
       List<Category> categories = await fetchCategories(
         params: ParamsCategoryList(post: post.id),
-        fetchFromSubsite: fetchFromSubsite,
+        onSubsite: onSubsite,
       );
       if (categories != null && categories.length != 0)
         post.categories = categories;
@@ -464,10 +460,10 @@ class WordPress {
   /// @TAK
   /// Returns a list of [Forum]
   async.Future<List<Forum>> fetchForums({
-    String fetchFromSubsite = null,
+    String onSubsite = null,
   }) async {
     final StringBuffer url = new StringBuffer(
-        _baseUrl + (fetchFromSubsite ?? '') + URL_BBP_BASE + '/forums');
+        _baseUrl + (onSubsite ?? '') + URL_BBP_BASE + '/forums');
 
     // url.write(postParams.toString());
     print(url.toString());
@@ -495,11 +491,11 @@ class WordPress {
   /// returns a list of [Topic]
   async.Future<List<Topic>> fetchTopics(
     int forumId, {
-    String fetchFromSubsite = null,
+    String onSubsite = null,
     bool embed = true,
   }) async {
     final StringBuffer url = new StringBuffer(_baseUrl +
-        (fetchFromSubsite ?? '') +
+        (onSubsite ?? '') +
         URL_BBP_BASE +
         '/forums/' +
         forumId.toString());
@@ -515,7 +511,7 @@ class WordPress {
         topics.add(await fetchTopic(
           data['id'],
           embed: embed,
-          fetchFromSubsite: fetchFromSubsite,
+          onSubsite: onSubsite,
         ));
       }
       return topics;
@@ -534,11 +530,11 @@ class WordPress {
   /// fetches topic info and returns a [Topic]
   async.Future<Topic> fetchTopic(
     int topicId, {
-    String fetchFromSubsite = null,
+    String onSubsite = null,
     bool embed = false,
   }) async {
     final StringBuffer url = new StringBuffer(_baseUrl +
-        (fetchFromSubsite ?? '') +
+        (onSubsite ?? '') +
         URL_BBP_BASE +
         '/topics/' +
         topicId.toString());
@@ -575,10 +571,10 @@ class WordPress {
   async.Future<Reply> _replyBuilder(
     Reply reply,
     int replyId, {
-    String fetchFromSubsite = null,
+    String onSubsite = null,
   }) async {
     final StringBuffer url = new StringBuffer(_baseUrl +
-        (fetchFromSubsite ?? '') +
+        (onSubsite ?? '') +
         URL_BBP_BASE +
         '/replies/' +
         replyId.toString());
@@ -659,9 +655,9 @@ class WordPress {
   ///
   /// In case of an error, a [WordPressError] object is thrown.
   async.Future<FetchUsersResult> fetchUsers(
-      {@required ParamsUserList params, String fetchFromSubsite = null}) async {
+      {@required ParamsUserList params, String onSubsite = null}) async {
     final StringBuffer url =
-        new StringBuffer(_baseUrl + (fetchFromSubsite ?? '') + URL_USERS);
+        new StringBuffer(_baseUrl + (onSubsite ?? '') + URL_USERS);
 
     url.write(params.toString());
 
@@ -712,10 +708,10 @@ class WordPress {
   /// In case of an error, a [WordPressError] object is thrown.
   async.Future<List<Comment>> fetchComments({
     @required ParamsCommentList params,
-    String fetchFromSubsite = null,
+    String onSubsite = null,
   }) async {
     final StringBuffer url =
-        new StringBuffer(_baseUrl + (fetchFromSubsite ?? '') + URL_COMMENTS);
+        new StringBuffer(_baseUrl + (onSubsite ?? '') + URL_COMMENTS);
 
     url.write(params.toString());
 
@@ -747,10 +743,10 @@ class WordPress {
   /// In case of an error, a [WordPressError] object is thrown.
   async.Future<List<CommentHierarchy>> fetchCommentsAsHierarchy({
     @required ParamsCommentList params,
-    String fetchFromSubsite = null,
+    String onSubsite = null,
   }) async {
     final StringBuffer url =
-        new StringBuffer(_baseUrl + (fetchFromSubsite ?? '') + URL_COMMENTS);
+        new StringBuffer(_baseUrl + (onSubsite ?? '') + URL_COMMENTS);
 
     url.write(params.toString());
 
@@ -790,14 +786,14 @@ class WordPress {
     bool fetchAll = false,
 
     /// @TAK
-    String fetchFromSubsite = null,
+    String onSubsite = null,
   }) async {
     if (fetchAll) {
       params = params.copyWith(perPage: 100);
     }
 
     final StringBuffer url =
-        new StringBuffer(_baseUrl + (fetchFromSubsite ?? '') + URL_CATEGORIES);
+        new StringBuffer(_baseUrl + (onSubsite ?? '') + URL_CATEGORIES);
 
     url.write(params.toString());
 
@@ -870,10 +866,10 @@ class WordPress {
     @required ParamsMediaList params,
 
     /// @TAK
-    String fetchFromSubsite = null,
+    String onSubsite = null,
   }) async {
     final StringBuffer url =
-        new StringBuffer(_baseUrl + (fetchFromSubsite ?? '') + URL_MEDIA);
+        new StringBuffer(_baseUrl + (onSubsite ?? '') + URL_MEDIA);
 
     url.write(params.toString());
 
@@ -930,8 +926,9 @@ class WordPress {
 
 //  yahya - @mymakarim
 
-  async.Future<dynamic> uploadMedia(File image) async {
-    final StringBuffer url = new StringBuffer(_baseUrl + URL_MEDIA);
+  async.Future<dynamic> uploadMedia(File image, {String onSubsite}) async {
+    final StringBuffer url =
+        new StringBuffer(_baseUrl + (onSubsite ?? '') + URL_MEDIA);
     var file = image.readAsBytesSync();
     final response = await http.post(
       url.toString(),
@@ -1182,9 +1179,9 @@ class WordPress {
   ///
   /// In case of an error, a [WordPressError] object is thrown.
   async.Future<Comment> createComment(
-      {@required Comment comment, fetchFromSubsite = null}) async {
+      {@required Comment comment, String onSubsite = null}) async {
     final StringBuffer url =
-        new StringBuffer(_baseUrl + (fetchFromSubsite ?? '') + URL_COMMENTS);
+        new StringBuffer(_baseUrl + (onSubsite ?? '') + URL_COMMENTS);
 
     final response = await http.post(
       url.toString(),
@@ -1208,11 +1205,9 @@ class WordPress {
   /// @TAK
   /// creates a new [Topic] under a [Forum]
   async.Future<Topic> createTopic(
-      {@required Topic topic,
-      @required int forumId,
-      fetchFromSubsite = null}) async {
+      {@required Topic topic, @required int forumId, onSubsite = null}) async {
     final StringBuffer url = new StringBuffer(_baseUrl +
-        (fetchFromSubsite ?? '') +
+        (onSubsite ?? '') +
         URL_BBP_BASE +
         '/forums/' +
         forumId.toString());
@@ -1239,9 +1234,9 @@ class WordPress {
       {@required Reply reply,
       @required int replyingId,
       bool isReplyingToTopic = true,
-      String fetchFromSubsite = null}) async {
+      String onSubsite = null}) async {
     final StringBuffer url = new StringBuffer(_baseUrl +
-        (fetchFromSubsite ?? '') +
+        (onSubsite ?? '') +
         URL_BBP_BASE +
         (isReplyingToTopic ? '/topics/' : '/replies/') +
         replyingId.toString());
