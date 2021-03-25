@@ -13,6 +13,7 @@ library flutter_wordpress;
 import 'dart:async' as async;
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:http/http.dart' as http;
 import 'package:meta/meta.dart';
@@ -934,7 +935,8 @@ class WordPress {
       url.toString(),
       headers: {
         "Content-Type": "image/png",
-        "Content-Disposition": "form-data; filename=firstIg.png",
+        "Content-Disposition":
+            "form-data; chemapp_${Random().nextInt(10000000).toString()}.png",
         "Authorization": "${_urlHeader['Authorization']}"
       },
       body: file,
