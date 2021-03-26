@@ -936,7 +936,7 @@ class WordPress {
       headers: {
         "Content-Type": "image/png",
         "Content-Disposition":
-            "form-data; chemapp_${Random().nextInt(10000000).toString()}.png",
+            "form-data; filename=chemapp_${Random().nextInt(10000000).toString()}.png",
         "Authorization": "${_urlHeader['Authorization']}"
       },
       body: file,
