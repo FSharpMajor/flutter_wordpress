@@ -27,151 +27,151 @@ class Links {
 
   Links.fromJson(Map<String, dynamic> json) {
     if (json['self'] != null) {
-      self = new List<Self>();
+      self = <Self>[];
       json['self'].forEach((v) {
         self.add(new Self.fromJson(v));
       });
     }
     if (json['collection'] != null) {
-      collection = new List<Collection>();
+      collection = <Collection>[];
       json['collection'].forEach((v) {
         collection.add(new Collection.fromJson(v));
       });
     }
     if (json['about'] != null) {
-      about = new List<About>();
+      about = <About>[];
       json['about'].forEach((v) {
         about.add(new About.fromJson(v));
       });
     }
     if (json['author'] != null) {
-      author = new List<Author>();
+      author = <Author>[];
       json['author'].forEach((v) {
         author.add(new Author.fromJson(v));
       });
     }
     if (json['replies'] != null) {
-      replies = new List<Replies>();
+      replies = <Replies>[];
       json['replies'].forEach((v) {
         replies.add(new Replies.fromJson(v));
       });
     }
     if (json['archives'] != null) {
-      archives = new List<Archives>();
+      archives = <Archives>[];
       json['archives'].forEach((v) {
         archives.add(new Archives.fromJson(v));
       });
     }
     if (json['version-history'] != null) {
-      versionHistory = new List<VersionHistory>();
+      versionHistory = <VersionHistory>[];
       json['version-history'].forEach((v) {
         versionHistory.add(new VersionHistory.fromJson(v));
       });
     }
     if (json['wp:post_type'] != null) {
-      wpPostType = new List<WpPostType>();
+      wpPostType = <WpPostType>[];
       json['wp:post_type'].forEach((v) {
         wpPostType.add(new WpPostType.fromJson(v));
       });
     }
     if (json['predecessor-version'] != null) {
-      predecessorVersion = new List<PredecessorVersion>();
+      predecessorVersion = <PredecessorVersion>[];
       json['predecessor-version'].forEach((v) {
         predecessorVersion.add(new PredecessorVersion.fromJson(v));
       });
     }
     if (json['wp:featuredmedia'] != null) {
-      wpFeaturedmedia = new List<WpFeaturedmedia>();
+      wpFeaturedmedia = <WpFeaturedmedia>[];
       json['wp:featuredmedia'].forEach((v) {
         wpFeaturedmedia.add(new WpFeaturedmedia.fromJson(v));
       });
     }
     if (json['wp:attachment'] != null) {
-      wpAttachment = new List<WpAttachment>();
+      wpAttachment = <WpAttachment>[];
       json['wp:attachment'].forEach((v) {
         wpAttachment.add(new WpAttachment.fromJson(v));
       });
     }
     if (json['wp:term'] != null) {
-      wpTerm = new List<WpTerm>();
+      wpTerm = <WpTerm>[];
       json['wp:term'].forEach((v) {
         wpTerm.add(new WpTerm.fromJson(v));
       });
     }
     if (json['wp:action-publish'] != null) {
-      wpActionPublish = new List<WpActionPublish>();
+      wpActionPublish = <WpActionPublish>[];
       json['wp:action-publish'].forEach((v) {
         wpActionPublish.add(new WpActionPublish.fromJson(v));
       });
     }
     if (json['wp:action-unfiltered-html'] != null) {
-      wpActionUnfilteredHtml = new List<WpActionUnfilteredHtml>();
+      wpActionUnfilteredHtml = <WpActionUnfilteredHtml>[];
       json['wp:action-unfiltered-html'].forEach((v) {
         wpActionUnfilteredHtml.add(new WpActionUnfilteredHtml.fromJson(v));
       });
     }
     if (json['wp:action-sticky'] != null) {
-      wpActionSticky = new List<WpActionSticky>();
+      wpActionSticky = <WpActionSticky>[];
       json['wp:action-sticky'].forEach((v) {
         wpActionSticky.add(new WpActionSticky.fromJson(v));
       });
     }
     if (json['wp:action-assign-author'] != null) {
-      wpActionAssignAuthor = new List<WpActionAssignAuthor>();
+      wpActionAssignAuthor = <WpActionAssignAuthor>[];
       json['wp:action-assign-author'].forEach((v) {
         wpActionAssignAuthor.add(new WpActionAssignAuthor.fromJson(v));
       });
     }
     if (json['wp:action-create-categories'] != null) {
-      wpActionCreateCategories = new List<WpActionCreateCategories>();
+      wpActionCreateCategories = <WpActionCreateCategories>[];
       json['wp:action-create-categories'].forEach((v) {
         wpActionCreateCategories.add(new WpActionCreateCategories.fromJson(v));
       });
     }
     if (json['wp:action-assign-categories'] != null) {
-      wpActionAssignCategories = new List<WpActionAssignCategories>();
+      wpActionAssignCategories = <WpActionAssignCategories>[];
       json['wp:action-assign-categories'].forEach((v) {
         wpActionAssignCategories.add(new WpActionAssignCategories.fromJson(v));
       });
     }
     if (json['wp:action-create-tags'] != null) {
-      wpActionCreateTags = new List<WpActionCreateTags>();
+      wpActionCreateTags = <WpActionCreateTags>[];
       json['wp:action-create-tags'].forEach((v) {
         wpActionCreateTags.add(new WpActionCreateTags.fromJson(v));
       });
     }
     if (json['wp:action-assign-tags'] != null) {
-      wpActionAssignTags = new List<WpActionAssignTags>();
+      wpActionAssignTags = <WpActionAssignTags>[];
       json['wp:action-assign-tags'].forEach((v) {
         wpActionAssignTags.add(new WpActionAssignTags.fromJson(v));
       });
     }
     if (json['wp:items'] != null) {
-      wpItems = new List<WpItems>();
+      wpItems = <WpItems>[];
       json['wp:items'].forEach((v) {
         wpItems.add(new WpItems.fromJson(v));
       });
     }
     if (json['up'] != null) {
-      up = new List<Up>();
+      up = <Up>[];
       json['up'].forEach((v) {
         up.add(new Up.fromJson(v));
       });
     }
     if (json['in-reply-to'] != null) {
-      inReplyTo = new List<InReplyTo>();
+      inReplyTo = <InReplyTo>[];
       json['in-reply-to'].forEach((v) {
         inReplyTo.add(new InReplyTo.fromJson(v));
       });
     }
     if (json['children'] != null) {
-      children = new List<Children>();
+      children = <Children>[];
       json['children'].forEach((v) {
         children.add(new Children.fromJson(v));
       });
     }
     if (json['curies'] != null) {
-      curies = new List<Curies>();
+      curies = <Curies>[];
       json['curies'].forEach((v) {
         curies.add(new Curies.fromJson(v));
       });

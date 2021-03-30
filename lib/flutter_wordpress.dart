@@ -145,7 +145,7 @@ class WordPress {
     };
 
     final response = await http.post(
-      _baseUrl + URL_JWT_TOKEN,
+      Uri.parse(_baseUrl + URL_JWT_TOKEN),
       body: body,
     );
 
@@ -173,8 +173,9 @@ class WordPress {
   async.Future<User> authenticateViaToken(String token) async {
     _urlHeader['Authorization'] = 'Bearer ${token}';
 
-    final response =
-        await http.post(_baseUrl + URL_JWT_TOKEN_VALIDATE, headers: _urlHeader);
+    final response = await http.post(
+        Uri.parse(_baseUrl + URL_JWT_TOKEN_VALIDATE),
+        headers: _urlHeader);
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
       return fetchMeUser();
@@ -204,7 +205,8 @@ class WordPress {
 
     url.write(constructUrlParams(params));
 
-    final response = await http.get(url.toString(), headers: _urlHeader);
+    final response =
+        await http.get(Uri.parse(url.toString()), headers: _urlHeader);
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
       final jsonStr = json.decode(response.body);
@@ -229,7 +231,7 @@ class WordPress {
   /// In case of an error, a [WordPressError] object is thrown.
   async.Future<User> fetchMeUser() async {
     final response =
-        await http.get(_baseUrl + URL_USER_ME, headers: _urlHeader);
+        await http.get(Uri.parse(_baseUrl + URL_USER_ME), headers: _urlHeader);
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
       final jsonStr = json.decode(response.body);
@@ -253,10 +255,11 @@ class WordPress {
   async.Future<List<Site>> fetchSites() async {
     final StringBuffer url = new StringBuffer(_baseUrl + URL_SITES);
 
-    final response = await http.get(url.toString(), headers: _urlHeader);
+    final response =
+        await http.get(Uri.parse(url.toString()), headers: _urlHeader);
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
-      List<Site> sites = new List();
+      List<Site> sites = [];
       final list = json.decode(response.body);
 
       for (final site in list) {
@@ -316,10 +319,11 @@ class WordPress {
 
     url.write(postParams.toString());
 
-    final response = await http.get(url.toString(), headers: _urlHeader);
+    final response =
+        await http.get(Uri.parse(url.toString()), headers: _urlHeader);
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
-      List<Post> posts = new List();
+      List<Post> posts = [];
       final list = json.decode(response.body);
 
       for (final post in list) {
@@ -397,7 +401,7 @@ class WordPress {
       if (comments != null && comments.length != 0) {
         post.comments = comments;
 
-        post.commentsHierarchy = new List();
+        post.commentsHierarchy = [];
         post.comments.forEach((comment) {
           if (comment.parent == 0)
             post.commentsHierarchy
@@ -447,7 +451,7 @@ class WordPress {
     if (childComments == null || childComments.length == 0) {
       return new CommentHierarchy(comment: comment, children: null);
     } else {
-      List<CommentHierarchy> children = new List();
+      List<CommentHierarchy> children = [];
       childComments.forEach((c) {
         children.add(_commentHierarchyBuilder(commentList, c));
       });
@@ -468,9 +472,10 @@ class WordPress {
 
     // url.write(postParams.toString());
     print(url.toString());
-    final response = await http.get(url.toString(), headers: _urlHeader);
+    final response =
+        await http.get(Uri.parse(url.toString()), headers: _urlHeader);
     if (response.statusCode >= 200 && response.statusCode < 300) {
-      List<Forum> forums = new List();
+      List<Forum> forums = [];
       final list = json.decode(response.body);
 
       for (final forum in list) {
@@ -503,7 +508,8 @@ class WordPress {
 
     // url.write(postParams.toString());
     print(url.toString());
-    final response = await http.get(url.toString(), headers: _urlHeader);
+    final response =
+        await http.get(Uri.parse(url.toString()), headers: _urlHeader);
     if (response.statusCode >= 200 && response.statusCode < 300) {
       List<Topic> topics = [];
       final list = json.decode(response.body)['topics'];
@@ -542,7 +548,8 @@ class WordPress {
     url.write('?_embed=true');
 
     print(url.toString());
-    final response = await http.get(url.toString(), headers: _urlHeader);
+    final response =
+        await http.get(Uri.parse(url.toString()), headers: _urlHeader);
     if (response.statusCode >= 200 && response.statusCode < 300) {
       final data = json.decode(response.body);
       Topic topic = Topic.fromJson(data);
@@ -569,6 +576,8 @@ class WordPress {
 
   /// @TAK
   /// fetches [reply]
+  // TODO: Figure out if I need this
+  // ignore: unused_element
   async.Future<Reply> _replyBuilder(
     Reply reply,
     int replyId, {
@@ -581,7 +590,8 @@ class WordPress {
         replyId.toString());
 
     print(url.toString());
-    final response = await http.get(url.toString(), headers: _urlHeader);
+    final response =
+        await http.get(Uri.parse(url.toString()), headers: _urlHeader);
     if (response.statusCode >= 200 && response.statusCode < 300) {
       final data = json.decode(response.body);
       reply.topic_id = data['topic_id'];
@@ -609,7 +619,7 @@ class WordPress {
     if (childReplies == null || childReplies.length == 0) {
       return new ReplyHierarchy(reply: reply, children: null);
     } else {
-      List<ReplyHierarchy> children = new List();
+      List<ReplyHierarchy> children = [];
       childReplies.forEach((c) {
         children.add(_replyHierarchyBuilder(replyList, c));
       });
@@ -630,10 +640,11 @@ class WordPress {
 
     url.write(params.toString());
 
-    final response = await http.get(url.toString(), headers: _urlHeader);
+    final response =
+        await http.get(Uri.parse(url.toString()), headers: _urlHeader);
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
-      List<Page> pages = new List<Page>();
+      List<Page> pages = <Page>[];
       final list = json.decode(response.body);
       list.forEach((page) {
         pages.add(Page.fromJson(page));
@@ -680,10 +691,11 @@ class WordPress {
   }
 
   async.Future<FetchUsersResult> _doUsersFetch(StringBuffer url) async {
-    final response = await http.get(url.toString(), headers: _urlHeader);
+    final response =
+        await http.get(Uri.parse(url.toString()), headers: _urlHeader);
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
-      List<User> users = new List<User>();
+      List<User> users = <User>[];
       final list = json.decode(response.body);
       int totalUsers = int.parse(response.headers['x-wp-total']);
 
@@ -716,10 +728,11 @@ class WordPress {
 
     url.write(params.toString());
 
-    final response = await http.get(url.toString(), headers: _urlHeader);
+    final response =
+        await http.get(Uri.parse(url.toString()), headers: _urlHeader);
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
-      List<Comment> comments = new List<Comment>();
+      List<Comment> comments = <Comment>[];
       final list = json.decode(response.body);
       list.forEach((comment) {
         comments.add(Comment.fromJson(comment));
@@ -751,11 +764,12 @@ class WordPress {
 
     url.write(params.toString());
 
-    final response = await http.get(url.toString(), headers: _urlHeader);
+    final response =
+        await http.get(Uri.parse(url.toString()), headers: _urlHeader);
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
-      List<Comment> comments = new List<Comment>();
-      List<CommentHierarchy> commentsHierarchy = new List<CommentHierarchy>();
+      List<Comment> comments = <Comment>[];
+      List<CommentHierarchy> commentsHierarchy = <CommentHierarchy>[];
       final list = json.decode(response.body);
       list.forEach((comment) {
         comments.add(Comment.fromJson(comment));
@@ -798,10 +812,11 @@ class WordPress {
 
     url.write(params.toString());
 
-    final response = await http.get(url.toString(), headers: _urlHeader);
+    final response =
+        await http.get(Uri.parse(url.toString()), headers: _urlHeader);
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
-      List<Category> categories = new List<Category>();
+      List<Category> categories = <Category>[];
       final list = json.decode(response.body);
       list.forEach((category) {
         categories.add(Category.fromJson(category));
@@ -838,10 +853,11 @@ class WordPress {
 
     url.write(params.toString());
 
-    final response = await http.get(url.toString(), headers: _urlHeader);
+    final response =
+        await http.get(Uri.parse(url.toString()), headers: _urlHeader);
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
-      List<Tag> tags = new List<Tag>();
+      List<Tag> tags = <Tag>[];
       final list = json.decode(response.body);
       list.forEach((tag) {
         tags.add(Tag.fromJson(tag));
@@ -874,10 +890,11 @@ class WordPress {
 
     url.write(params.toString());
 
-    final response = await http.get(url.toString(), headers: _urlHeader);
+    final response =
+        await http.get(Uri.parse(url.toString()), headers: _urlHeader);
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
-      List<Media> media = new List<Media>();
+      List<Media> media = <Media>[];
       final list = json.decode(response.body);
       list.forEach((m) {
         media.add(Media.fromJson(m));
@@ -907,7 +924,7 @@ class WordPress {
     final StringBuffer url = new StringBuffer(_baseUrl + URL_POSTS);
 
     final response = await http.post(
-      url.toString(),
+      Uri.parse(url.toString()),
       headers: _urlHeader,
       body: post.toJson(),
     );
@@ -932,7 +949,7 @@ class WordPress {
         new StringBuffer(_baseUrl + (onSubsite ?? '') + URL_MEDIA);
     var file = image.readAsBytesSync();
     final response = await http.post(
-      url.toString(),
+      Uri.parse(url.toString()),
       headers: {
         "Content-Type": "image/png",
         "Content-Disposition":
@@ -982,6 +999,7 @@ class WordPress {
           throw new WordPressError(message: contents);
         }
       });
+      return false;
     }
   }
 
@@ -1014,6 +1032,7 @@ class WordPress {
           throw new WordPressError(message: contents);
         }
       });
+      return false;
     }
   }
 
@@ -1043,6 +1062,7 @@ class WordPress {
           throw new WordPressError(message: contents);
         }
       });
+      return false;
     }
   }
 
@@ -1071,6 +1091,7 @@ class WordPress {
           throw new WordPressError(message: contents);
         }
       });
+      return false;
     }
   }
 
@@ -1106,6 +1127,7 @@ class WordPress {
           throw new WordPressError(message: contents);
         }
       });
+      return false;
     }
   }
 
@@ -1133,6 +1155,7 @@ class WordPress {
           throw new WordPressError(message: contents);
         }
       });
+      return false;
     }
   }
 
@@ -1165,6 +1188,7 @@ class WordPress {
           throw new WordPressError(message: contents);
         }
       });
+      return false;
     }
   }
 
@@ -1186,7 +1210,7 @@ class WordPress {
         new StringBuffer(_baseUrl + (onSubsite ?? '') + URL_COMMENTS);
 
     final response = await http.post(
-      url.toString(),
+      Uri.parse(url.toString()),
       headers: _urlHeader,
       body: comment.toJson(),
     );
@@ -1214,7 +1238,7 @@ class WordPress {
         '/forums/' +
         forumId.toString());
 
-    final response = await http.post(url.toString(),
+    final response = await http.post(Uri.parse(url.toString()),
         headers: _urlHeader, body: topic.toJson());
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
@@ -1243,7 +1267,7 @@ class WordPress {
         (isReplyingToTopic ? '/topics/' : '/replies/') +
         replyingId.toString());
 
-    final response = await http.post(url.toString(),
+    final response = await http.post(Uri.parse(url.toString()),
         headers: _urlHeader, body: reply.toJson());
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
