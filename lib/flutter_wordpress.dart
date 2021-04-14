@@ -426,6 +426,7 @@ class WordPress {
         params: ParamsMediaList(
           includeMediaIDs: [post.featuredMediaID],
         ),
+        onSubsite: onSubsite,
       );
       if (media != null && media.length != 0) post.featuredMedia = media[0];
     }
@@ -434,6 +435,7 @@ class WordPress {
         params: ParamsMediaList(
           includeParentIDs: [post.id],
         ),
+        onSubsite: onSubsite,
       );
       if (media != null && media.length != 0) post.attachments = media;
     }
