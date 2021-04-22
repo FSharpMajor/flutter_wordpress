@@ -1068,24 +1068,26 @@ class WordPress {
     }
   }
 
+  // @TAK modified so it actually works...
   async.Future<bool> updateUser({@required int id, @required User user}) async {
     final StringBuffer url = new StringBuffer(_baseUrl + URL_USERS + '/$id');
 
-    HttpClient httpClient = new HttpClient();
-    HttpClientRequest request =
-        await httpClient.postUrl(Uri.parse(url.toString()));
-    request.headers
-        .set(HttpHeaders.contentTypeHeader, "application/json; charset=UTF-8");
-    request.headers.set(HttpHeaders.acceptHeader, "application/json");
-    request.headers.set('Authorization', "${_urlHeader['Authorization']}");
+    var headers = {
+      'Authorization': _urlHeader['Authorization'],
+    };
+    var request = http.MultipartRequest('POST', Uri.parse(url.toString()));
+    request.fields.addAll(user
+        .toJsonString()
+        .map((key, value) => MapEntry(key, value.toString())));
 
-    request.add(utf8.encode(json.encode(user.toJson())));
-    HttpClientResponse response = await request.close();
+    request.headers.addAll(headers);
 
-    if (response.statusCode >= 200 && response.statusCode < 300) {
+    http.StreamedResponse response = await request.send();
+
+    if (response.statusCode == 200) {
       return true;
     } else {
-      response.transform(utf8.decoder).listen((contents) {
+      response.stream.transform(utf8.decoder).listen((contents) {
         try {
           WordPressError err = WordPressError.fromJson(json.decode(contents));
           throw err;

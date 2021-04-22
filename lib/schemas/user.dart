@@ -120,6 +120,45 @@ class User {
     return data;
   }
 
+  // @TAK
+  Map<String, String> toJsonString() {
+    final Map<String, String> data = new Map<String, String>();
+    if (this.id != null) data['id'] = this.id.toString();
+    if (this.username != null) data['username'] = this.username;
+    if (this.name != null) data['name'] = this.name;
+    if (this.firstName != null) data['first_name'] = this.firstName;
+    if (this.lastName != null) data['last_name'] = this.lastName;
+    if (this.email != null) data['user_email'] = this.email;
+    if (this.url != null) data['url'] = this.url;
+    if (this.description != null) data['description'] = this.description;
+    if (this.link != null) data['link'] = this.link;
+    if (this.locale != null) data['locale'] = this.locale;
+    if (this.nickname != null) data['nickname'] = this.nickname;
+    if (this.slug != null) data['slug'] = this.slug;
+    if (this.roles != null) data['roles'] = this.roles.toString();
+    if (this.registeredDate != null)
+      data['registered_date'] = this.registeredDate;
+    if (this.capabilities != null) {
+      data['capabilities'] = this.capabilities.toString();
+    }
+    if (this.extraCapabilities != null) {
+      data['extra_capabilities'] = this.extraCapabilities.toString();
+    }
+    if (this.avatarUrls != null) {
+      data['avatar_urls'] = this.avatarUrls.toString();
+    }
+    // if (this.meta != null) {
+    //   data['meta'] = this.meta.toString();
+    // }
+    if (this.lLinks != null) {
+      data['_links'] = this.lLinks.toString();
+    }
+    // if (this.password != null) {
+    //   data['password'] = this.password;
+    // }
+    return data;
+  }
+
   @override
   String toString() {
     return 'id: $id, name: $name';
